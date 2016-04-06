@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="QiniuImageBox:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="QiniuImageBox.war">
+      <element id="artifact" artifact-name="QiniuImageBox:war exploded" />
+    </root>
+  </artifact>
+</component>

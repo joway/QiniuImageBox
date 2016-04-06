@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/UploadFiles.iml" filepath="$PROJECT_DIR$/UploadFiles.iml" />
+      <module fileurl="file://$PROJECT_DIR$/QiniuImageBox.iml" filepath="$PROJECT_DIR$/QiniuImageBox.iml" />
     </modules>
   </component>
 </project>
