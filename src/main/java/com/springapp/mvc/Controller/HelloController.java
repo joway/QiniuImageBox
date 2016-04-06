@@ -1,6 +1,7 @@
 package com.springapp.mvc.Controller;
 
 import com.qiniu.common.QiniuException;
+import com.springapp.mvc.Config;
 import com.springapp.mvc.Qiniu.QiniuClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,50 +21,47 @@ import java.util.Iterator;
 public class HelloController {
 
 
-	private QiniuClient initQiniu() throws QiniuException {
+    private QiniuClient initQiniu() throws QiniuException {
 
-		String ACCESS_KEY="hxAZX2n5VRbB1Nj-4VXq-bllzak5ClgytGYCx7dt";
-		String SECRET_KEY="vIB-JjlqQn6M2MYqX8r0wG9FXO13ExeK3Y21fj4f";
-		String bucketName="images";
-		String bucketUrl="https://dn-joway.qbox.me/";
+        String ACCESS_KEY = Config.ACCESS_KEY;
+        String SECRET_KEY = Config.SECRET_KEY;
+        String bucketName = Config.bucketName;
+        String bucketUrl = Config.bucketUrl;
 
-		QiniuClient qiniuClient = new QiniuClient(ACCESS_KEY,SECRET_KEY);
-		qiniuClient.setBucketName(bucketName);
-		qiniuClient.setBucketUrl(bucketUrl);
-		return qiniuClient;
-	}
+        QiniuClient qiniuClient = new QiniuClient(ACCESS_KEY, SECRET_KEY);
+        qiniuClient.setBucketName(bucketName);
+        qiniuClient.setBucketUrl(bucketUrl);
+        return qiniuClient;
+    }
 
-	@RequestMapping("/")
-	public String fileUpload(ModelMap modelMap,HttpServletRequest request) throws IOException {
+    @RequestMapping("/")
+    public String fileUpload(ModelMap modelMap, HttpServletRequest request) throws IOException {
 
-		CommonsMultipartResolver multipartResolver=new CommonsMultipartResolver(
-				request.getSession().getServletContext());
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(
+                request.getSession().getServletContext());
 
-        if(multipartResolver.isMultipart(request))
-		{
-			MultipartHttpServletRequest multiRequest=(MultipartHttpServletRequest)request;
-			Iterator iter = multiRequest.getFileNames();
+        if (multipartResolver.isMultipart(request)) {
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+            Iterator iter = multiRequest.getFileNames();
 
-			QiniuClient qiniuClient = initQiniu();
+            QiniuClient qiniuClient = initQiniu();
 
             ArrayList<String> urls = new ArrayList<String>();
 
-			while(iter.hasNext())
-			{
-				MultipartFile file=multiRequest.getFile(iter.next().toString());
-				if(file!=null)
-				{
-					String filename= (new Date()).getTime()+"_"+file.getOriginalFilename();
-					qiniuClient.upload(file.getBytes(),filename);
-					String full_url=qiniuClient.getBucketUrl()+filename;
+            while (iter.hasNext()) {
+                MultipartFile file = multiRequest.getFile(iter.next().toString());
+                if (file != null) {
+                    String filename = (new Date()).getTime() + "_" + file.getOriginalFilename();
+                    qiniuClient.upload(file.getBytes(), filename);
+                    String full_url = qiniuClient.getBucketUrl() + filename;
                     urls.add(full_url);
-				}
-			}
+                }
+            }
 
-            modelMap.addAttribute("urls",urls);
+            modelMap.addAttribute("urls", urls);
 
         }
 
-		return "upload";
-	}
+        return "upload";
+    }
 }
