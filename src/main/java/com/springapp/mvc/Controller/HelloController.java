@@ -5,13 +5,14 @@ import com.springapp.mvc.Qiniu.QiniuClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 
 @Controller
@@ -32,42 +33,37 @@ public class HelloController {
 		return qiniuClient;
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
-	public String printWelcome(ModelMap model) {
-		model.addAttribute("message", "Hello world!");
-		return "upload";
-	}
-
-	@RequestMapping("fileUpload")
+	@RequestMapping("/")
 	public String fileUpload(ModelMap modelMap,HttpServletRequest request) throws IOException {
-		//将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
+
 		CommonsMultipartResolver multipartResolver=new CommonsMultipartResolver(
 				request.getSession().getServletContext());
-		//检查form中是否有enctype="multipart/form-data"
-		if(multipartResolver.isMultipart(request))
+
+        if(multipartResolver.isMultipart(request))
 		{
-			//将request变成多部分request
 			MultipartHttpServletRequest multiRequest=(MultipartHttpServletRequest)request;
-			//获取multiRequest 中所有的文件名
 			Iterator iter = multiRequest.getFileNames();
 
-			//根据自己的信息，配置七牛
-			QiniuClient qiniuClient = initQiniu();;
+			QiniuClient qiniuClient = initQiniu();
+
+            ArrayList<String> urls = new ArrayList<String>();
 
 			while(iter.hasNext())
 			{
-				//一次遍历所有文件
 				MultipartFile file=multiRequest.getFile(iter.next().toString());
 				if(file!=null)
 				{
-					qiniuClient.upload(file.getBytes(),file.getOriginalFilename());
-					String full_url=qiniuClient.getBucketUrl()+file.getOriginalFilename();
-					modelMap.addAttribute("url",full_url);
+					String filename= (new Date()).getTime()+"_"+file.getOriginalFilename();
+					qiniuClient.upload(file.getBytes(),filename);
+					String full_url=qiniuClient.getBucketUrl()+filename;
+                    urls.add(full_url);
 				}
 			}
-		}
 
-		// 重定向
+            modelMap.addAttribute("urls",urls);
+
+        }
+
 		return "upload";
 	}
 }

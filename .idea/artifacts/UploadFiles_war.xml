@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="war" build-on-make="true" name="UploadFiles:war">
+  <artifact type="war" name="UploadFiles:war">
     <output-path>$PROJECT_DIR$/target</output-path>
     <root id="archive" name="UploadFiles.war">
       <element id="artifact" artifact-name="UploadFiles:war exploded" />

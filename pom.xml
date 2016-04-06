@@ -75,6 +75,12 @@
             <version>[7.0.0, 7.0.99]</version>
         </dependency>
 
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
